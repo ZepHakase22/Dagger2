@@ -7,11 +7,10 @@ import android.widget.TextView;
 
 import com.sensoriainc.dagger2tutorial.data.DataManager;
 import com.sensoriainc.dagger2tutorial.data.model.User;
-import com.sensoriainc.dagger2tutorial.di.component.ActivityComponent;
-import com.sensoriainc.dagger2tutorial.di.component.DaggerActivityComponent;
-import com.sensoriainc.dagger2tutorial.di.module.ActivityModule;
 
 import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
 
 public class MainActivity extends AppCompatActivity {
     @Inject
@@ -21,23 +20,12 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTvUserInfo;
     private TextView mTvAccessToken;
 
-    protected ActivityComponent activityComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        if(activityComponent==null) {
-            activityComponent = DaggerActivityComponent
-                                    .builder()
-                                    .activityModule(new ActivityModule(this))
-                                    .applicationComponent(DemoApplication.get(this).getComponent())
-                                    .build();
-            activityComponent.inject(this);
-        }
-
-
 
         mTvUserInfo = findViewById(R.id.tv_user_info);
         mTvAccessToken = findViewById(R.id.tv_access_token);

@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import com.sensoriainc.dagger2tutorial.di.ApplicationContext;
 import com.sensoriainc.dagger2tutorial.di.DatabaseInfo;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -17,16 +19,11 @@ import dagger.Provides;
 @Module
 public class ApplicationModule {
 
-    private final Application mApplication;
-
-    public ApplicationModule(Application mApplication) {
-        this.mApplication=mApplication;
-    }
-
     @Provides
+    @Singleton
     @ApplicationContext
-    Context provideContext() {
-        return mApplication;
+    Context provideContext(Application application) {
+        return application;
     }
 
     @Provides
@@ -42,8 +39,8 @@ public class ApplicationModule {
     }
 
     @Provides
-    SharedPreferences provideSharedPrefs() {
-        return mApplication.getSharedPreferences("demo-prefs",Context.MODE_PRIVATE);
+    SharedPreferences provideSharedPrefs(Application application) {
+        return application.getSharedPreferences("demo-prefs",Context.MODE_PRIVATE);
     }
 
 

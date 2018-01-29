@@ -1,19 +1,24 @@
 package com.sensoriainc.dagger2tutorial;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
-import com.sensoriainc.dagger2tutorial.di.component.ApplicationComponent;
 import com.sensoriainc.dagger2tutorial.di.component.DaggerApplicationComponent;
-import com.sensoriainc.dagger2tutorial.di.module.ApplicationModule;
+
+import javax.inject.Inject;
+
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasActivityInjector;
 
 /**
  * Created by zep on 23/01/18.
  */
 
-public class DemoApplication extends Application {
+public class DemoApplication extends Application implements HasActivityInjector {
 
-    protected ApplicationComponent applicationComponent;
+    @Inject
+    DispatchingAndroidInjector<Activity> activityDispatchingAndroidInjector;
 
     public static DemoApplication get(Context context) {
         return (DemoApplication) context.getApplicationContext();
@@ -23,14 +28,16 @@ public class DemoApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        applicationComponent = DaggerApplicationComponent
-                                .builder()
-                                .applicationModule(new ApplicationModule(this))
-                                .build();
+        DaggerApplicationComponent
+            .builder()
+            .application(this)
+            .build()
+            .inject(this);
     }
 
-    public ApplicationComponent getComponent(){
-        return applicationComponent;
+    @Override
+    public DispatchingAndroidInjector<Activity> activityInjector() {
+        return activityDispatchingAndroidInjector;
     }
 
 }
